@@ -10,9 +10,21 @@ app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
+
+// this loads index
 app.get('/', function(request, response) {
   response.render('pages/index')
 });
+
+
+// this is for fb messenger
+app.get('/webhook', function (req, res) {
+  console.log('WEBHOOK works')
+  if (req.query['hub.verify_token'] === '<validation_token>') {
+    res.send(req.query['hub.challenge']);
+  }
+  res.send('Error, wrong validation token');
+})
 
 app.get('/cool', function(request, response) {
   response.send(cool());
