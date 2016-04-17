@@ -1,6 +1,7 @@
 var cool = require('cool-ascii-faces');
 var express = require('express');
 var app = express();
+var messaging_events
 
 app.set('port', (process.env.PORT || 5000));
 
@@ -52,7 +53,7 @@ app.get('/webhook', function (req, res) {
 // handle messages from FB Messenger
 app.post('/webhook/', function (req, res) {
   console.log('Webhook post works');
-  console.log(req);
+  console.log(req.body);
   messaging_events = req.body.entry[0].messaging;
   for (i = 0; i < messaging_events.length; i++) {
     event = req.body.entry[0].messaging[i];
