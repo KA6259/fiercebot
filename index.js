@@ -54,10 +54,9 @@ app.post('/webhook/', function (req, res) {
   console.log('Webhook post works');
   if (req.body.entry[0].messaging == 0) {
     console.log("empty message");
-  else if
+  } else {
     messaging_events = req.body.entry[0].messaging;
   }
-  
   
   for (i = 0; i < messaging_events.length; i++) {
     event = req.body.entry[0].messaging[i];
