@@ -20,7 +20,7 @@ app.get('/', function(request, response) {
 // this is for fb messenger
 app.get('/webhook', function (req, res) {
   console.log('WEBHOOK works')
-  if (req.query['hub.verify_token'] === '<validation_token>') {
+  if (req.query['hub.verify_token'] === 'LUKzfBrS') {
     res.send(req.query['hub.challenge']);
   }
   res.send('Error, wrong validation token');
