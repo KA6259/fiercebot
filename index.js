@@ -18,7 +18,7 @@ app.get('/', function(request, response) {
 });
 
 
-var token = "CAADVqZBlMB7kBALCWQadDghHx3VoZBZCZBNcwNoDk5cF8Or70nVYrJ1mK2JfZCcGnuclgBdQcrDKdKbK2GNDU2VmOspiqXzXQsl2THZCZAn8Im9x8zFU4BFcOG8H8LpWNZAhpr3TknZCzs3Teh9oeIL8M562IhNZCFLjZAd97Q8S2DkcDFOV4DhoHKfxRdrrE8f7TUZD";
+var token = "CAADVqZBlMB7kBABZCm7XXBYPRYt7Y6tlFeNdMPuGGjtsvEwhfIWFgZAucqPMlGvqXBXD3QBh5LAsK5pFDQkZBKqH0HYriex58W6hVgyJ5W7RjDkFrqWwkcQR9qt135JibBJfdXNgubLHoT0KH6cFM9EnZCBE2gsKu7emZAMOQ040Ev2PFI7HDTbm72qgYJyiUZD";
 
 function sendTextMessage(sender, text) {
   messageData = {
@@ -50,24 +50,43 @@ app.get('/webhook', function (req, res) {
   res.send('Error, wrong validation token');
 })
 
+var token = "<page_access_token>";
+
+function sendTextMessage(sender, text) {
+  messageData = {
+    text:text
+  }
+  request({
+    url: 'https://graph.facebook.com/v2.6/me/messages',
+    qs: {access_token:token},
+    method: 'POST',
+    json: {
+      recipient: {id:sender},
+      message: messageData,
+    }
+  }, function(error, response, body) {
+    if (error) {
+      console.log('Error sending message: ', error);
+    } else if (response.body.error) {
+      console.log('Error: ', response.body.error);
+    }
+  });
+}
+
+
 // handle messages from FB Messenger
 app.post('/webhook/', function (req, res) {
-  console.log('Webhook post');
-  console.log('Request Body:');
-  console.log(req);
-  messaging_events = req.entry.messaging;
+  messaging_events = req.body.entry[0].messaging;
   for (i = 0; i < messaging_events.length; i++) {
-    event = req.entry.messaging[i];
+    event = req.body.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
       text = event.message.text;
       sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
-      console.log('Received a message')
     }
   }
   res.sendStatus(200);
 });
-
 
 
 app.get('/cool', function(request, response) {
