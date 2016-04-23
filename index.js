@@ -56,7 +56,7 @@ function sendTextMessage(sender, text) {
 // handle messages from FB Messenger
 app.post('/webhook/', function (req, res) {
   console.log(req.entry);
-  messaging_events = req.entry.messaging;
+  messaging_events = req.entry.messaging[0];
   //messaging_events = req.entry[0].messaging;
   for (i = 0; i < messaging_events.length; i++) {
     event = req.entry.messaging[i];
