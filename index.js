@@ -20,26 +20,6 @@ app.get('/', function(request, response) {
 
 var token = "CAADVqZBlMB7kBABZCm7XXBYPRYt7Y6tlFeNdMPuGGjtsvEwhfIWFgZAucqPMlGvqXBXD3QBh5LAsK5pFDQkZBKqH0HYriex58W6hVgyJ5W7RjDkFrqWwkcQR9qt135JibBJfdXNgubLHoT0KH6cFM9EnZCBE2gsKu7emZAMOQ040Ev2PFI7HDTbm72qgYJyiUZD";
 
-function sendTextMessage(sender, text) {
-  messageData = {
-    text:text
-  }
-  request({
-    url: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: {access_token:token},
-    method: 'POST',
-    json: {
-      recipient: {id:sender},
-      message: messageData,
-    }
-  }, function(error, response, body) {
-    if (error) {
-      console.log('Error sending message: ', error);
-    } else if (response.body.error) {
-      console.log('Error: ', response.body.error);
-    }
-  });
-}
 
 // this is for fb messenger
 app.get('/webhook', function (req, res) {
@@ -50,7 +30,6 @@ app.get('/webhook', function (req, res) {
   res.send('Error, wrong validation token');
 })
 
-var token = "<page_access_token>";
 
 function sendTextMessage(sender, text) {
   messageData = {
@@ -79,7 +58,7 @@ app.post('/webhook/', function (req, res) {
   console.log(req.entry[0]);
   messaging_events = req.entry[0].messaging;
   for (i = 0; i < messaging_events.length; i++) {
-    event = req.body.entry[0].messaging[i];
+    event = req.entry[0].messaging[i];
     sender = event.sender.id;
     if (event.message && event.message.text) {
       text = event.message.text;
@@ -90,9 +69,9 @@ app.post('/webhook/', function (req, res) {
 });
 
 
-app.get('/cool', function(request, response) {
-  response.send(cool());
-});
+// app.get('/cool', function(request, response) {
+//   response.send(cool());
+// });
 
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
