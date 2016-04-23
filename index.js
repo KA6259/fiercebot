@@ -1,42 +1,42 @@
-var cool = require('cool-ascii-faces');
 var express = require('express');
-var app = express();
 var bodyParser = require('body-parser');
-var messaging_events;
+var request = require("request")
 
+var app = express();
+var port = process.env.PORT || 3000;
 
-
-app.set('port', (process.env.PORT || 5000));
-
-app.use(express.static(__dirname + '/public'));
-
-app.use(bodyParser.json());
 // body parser middleware
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// views is directory for all template files
-app.set('views', __dirname + '/views');
-app.set('view engine', 'ejs');
-
-
-// this loads index
-app.get('/', function(request, response) {
-  response.render('pages/index')
-});
-
-
-var token = "CAADVqZBlMB7kBABZCm7XXBYPRYt7Y6tlFeNdMPuGGjtsvEwhfIWFgZAucqPMlGvqXBXD3QBh5LAsK5pFDQkZBKqH0HYriex58W6hVgyJ5W7RjDkFrqWwkcQR9qt135JibBJfdXNgubLHoT0KH6cFM9EnZCBE2gsKu7emZAMOQ040Ev2PFI7HDTbm72qgYJyiUZD";
-
-
-// this is for fb messenger
-app.get('/webhook', function (req, res) {
-  console.log('WEBHOOK works')
+app.get('/', function (req, res) {
   if (req.query['hub.verify_token'] === 'LUKzfBrS') {
     res.send(req.query['hub.challenge']);
+    console.log("app.get ran")
+    res.sendStatus(200)
   }
-  res.send('Error, wrong validation token');
+
+  console.log("Error: wrong validation token")
 })
 
+app.post('/', function (req, res) {
+  messaging_events = req.body.entry[0].messaging;
+  console.log("app.post ran")
+  for (i = 0; i < messaging_events.length; i++) {
+    event = req.body.entry[0].messaging[i];
+    sender = event.sender.id;
+    if (event.message && event.message.text) {
+      text = event.message.text;
+      sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
+    }
+  }
+  res.sendStatus(200);
+});
+
+app.listen(port, function () {
+  console.log('Listening on port ' + port);
+});
+
+var token = "<myToken>";
 
 function sendTextMessage(sender, text) {
   messageData = {
@@ -58,29 +58,3 @@ function sendTextMessage(sender, text) {
     }
   });
 }
-
-
-// handle messages from FB Messenger
-app.post('/webhook/', function (req, res) {
-  console.log(req.entry);
-  messaging_events = req.entry[0].messaging[0];
-  //messaging_events = req.entry[0].messaging;
-  for (i = 0; i < messaging_events.length; i++) {
-    event = req.entry.messaging[i];
-    sender = event.sender.id;
-    if (event.message && event.message.text) {
-      text = event.message.text;
-      sendTextMessage(sender, "Text received, echo: "+ text.substring(0, 200));
-    }
-  }
-  res.sendStatus(200);
-});
-
-
-// app.get('/cool', function(request, response) {
-//   response.send(cool());
-// });
-
-app.listen(app.get('port'), function() {
-  console.log('Node app is running on port', app.get('port'));
-});
