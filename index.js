@@ -36,7 +36,7 @@ app.listen(port, function () {
   console.log('Listening on port ' + port);
 });
 
-var token = "<myToken>";
+var token = "CAADVqZBlMB7kBAEvCwFCPr7Va2jOFopHOPA4lfIJza7zJBQ5yK9gqKB2lNzKYgymsSEwBno6q03fGNc2IHcTUvu5BuSzhpR4AurZBsQXdr2X1wVooHkwXt1Sq712SsewqrtYh4mTrcUc6MJGTrZBykrCE04E9xTc0N8WhwOOXhde3uCDaMNQh7TMlpgZBwUZD";
 
 function sendTextMessage(sender, text) {
   messageData = {
